@@ -337,7 +337,7 @@ if __name__ == '__main__':
                                                   normQuat.w])
         oriPub.publish(Vector3(roll, pitch, yaw))
         oriDegPub.publish(Vector3(degrees(roll), degrees(pitch), degrees(yaw)))
-        posePub.publish( PoseStamped(h,Pose(Point(0.0,0.0,0.0),normQuat)) )
+        posePub.publish( PoseStamped(h,Pose(Point(0.0,0.0,0.0),Quaternion(-normQuat.x, -normQuat.y, -normQuat.z, normQuat.w))) )
 
     # Package the arm and x-axis direction into an Arm message
     def proc_arm(myoarm_msg):
