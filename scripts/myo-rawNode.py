@@ -279,13 +279,13 @@ if __name__ == '__main__':
     rospy.init_node('myo_raw')
 
     # Define Publishers
-    imuPub = rospy.Publisher('~myo_imu', Imu, queue_size=1)
-    oriPub = rospy.Publisher('~myo_ori', Vector3, queue_size=1)
-    oriDegPub = rospy.Publisher('~myo_ori_deg', Vector3, queue_size=1)
-    emgPub = rospy.Publisher('~myo_emg', EmgArray, queue_size=1)
-    armPub = rospy.Publisher('~myo_arm', MyoArm, queue_size=1, latch=True)
-    gestPub = rospy.Publisher('~myo_gest', MyoPose, queue_size=1)
-    gestStrPub = rospy.Publisher('~myo_gest_str', String, queue_size=1)
+    imuPub = rospy.Publisher('~imu', Imu, queue_size=1)
+    oriPub = rospy.Publisher('~ori', Vector3, queue_size=1)
+    oriDegPub = rospy.Publisher('~ori_deg', Vector3, queue_size=1)
+    emgPub = rospy.Publisher('~emg', EmgArray, queue_size=1)
+    armPub = rospy.Publisher('~arm', MyoArm, queue_size=1, latch=True)
+    gestPub = rospy.Publisher('~gest', MyoGesture, queue_size=1)
+    gestStrPub = rospy.Publisher('~gest_str', String, queue_size=1)
     posePub = rospy.Publisher('~pose', PoseStamped, queue_size=1)
 
     # Package the EMG data into an EmgArray
