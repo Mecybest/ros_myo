@@ -14,7 +14,7 @@ from tf.transformations import euler_from_quaternion
 from std_msgs.msg import String, Header, UInt8
 from geometry_msgs.msg import Quaternion, Vector3, PoseStamped, Point, Pose
 from sensor_msgs.msg import Imu
-from ros_myo.msg import MyoArm, MyoPose, EmgArray
+from ros_myo.msg import MyoArm, MyoGesture, EmgArray
 
 
 class MyoRaw(object):
@@ -31,7 +31,7 @@ class MyoRaw(object):
         self.emg_handlers = []
         self.imu_handlers = []
         self.arm_handlers = []
-        self.pose_handlers = []
+        self.gesture_handlers = []
 
     def detect_tty(self):
         for p in comports():
@@ -157,12 +157,12 @@ class MyoRaw(object):
                     self.on_arm(MyoArm(arm=val, xdir=xdir))
                 elif typ == 2:  # removed from arm
                     self.on_arm(MyoArm(MyoArm.UNKNOWN, MyoArm.UNKNOWN))
-                elif typ == 3:  # pose
+                elif typ == 3:  # gesture
                     if val == 255:
-                        pose = MyoPose(0)
+                        gesture = MyoGesture(0)
                     else:
-                        pose = MyoPose(val + 1)
-                    self.on_pose(pose)
+                        gesture = MyoGesture(val + 1)
+                    self.on_gesture(gesture)
             else:
                 print('data with unknown attr: %02X %s' % (attr, p))
 
@@ -236,8 +236,8 @@ class MyoRaw(object):
     def add_imu_handler(self, h):
         self.imu_handlers.append(h)
 
-    def add_pose_handler(self, h):
-        self.pose_handlers.append(h)
+    def add_gesture_handler(self, h):
+        self.gesture_handlers.append(h)
 
     def add_arm_handler(self, h):
         self.arm_handlers.append(h)
@@ -250,8 +250,8 @@ class MyoRaw(object):
         for h in self.imu_handlers:
             h(quat, acc, gyro)
 
-    def on_pose(self, p):
-        for h in self.pose_handlers:
+    def on_gesture(self, p):
+        for h in self.gesture_handlers:
             h(p)
 
     def on_arm(self, myoarm_msg):
@@ -346,9 +346,9 @@ if __name__ == '__main__':
         armPub.publish(calibArm)
 
     # Publish the value of an enumerated gesture
-    def proc_pose(myo_pose):
-        gestPub.publish(myo_pose)
-        p = myo_pose.pose
+    def proc_gesture(myo_gesture):
+        gestPub.publish(myo_gesture)
+        p = myo_gesture.gesture
         if p == 0:
             s = "UNKNOWN"
         elif p == 1:
@@ -370,7 +370,7 @@ if __name__ == '__main__':
     m.add_emg_handler(proc_emg)
     m.add_imu_handler(proc_imu)
     m.add_arm_handler(proc_arm)
-    m.add_pose_handler(proc_pose)
+    m.add_gesture_handler(proc_gesture)
 
     m.connect()
 
